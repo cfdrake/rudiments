@@ -64,10 +64,12 @@ function setup_midi()
 end
 
 function enc(n, d)
+  return
 end
 
 function key(n, z)
-  if key == 3 and z == 1 then
+  if n == 3 and z == 1 then
+    print('randomize')
     randomize()
   end
 end
