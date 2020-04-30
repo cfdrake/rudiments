@@ -69,7 +69,6 @@ end
 
 function key(n, z)
   if n == 3 and z == 1 then
-    print('randomize')
     randomize()
   end
 end
