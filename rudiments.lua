@@ -159,8 +159,6 @@ function init()
 
   params:default()
 
-  rudiments_load()
-
   clk:start()
 end
 
@@ -252,36 +250,5 @@ function redraw()
   screen.update()
 end
 
-function rudiments_save()
-  -- todo, should persist voice settings?
-  local fd=io.open(norns.state.data .. "rudiments.data","w+")
-  io.output(fd)
-  for i=1,112 do
-    io.write(pattern[i].data .. "\n")
-    for x=1,4 do
-      io.write(pattern[i].k[x] .. "\n")
-      io.write(pattern[i].n[x] .. "\n")
-    end
-  end
-  io.close(fd)
-end
-
-function rudiments_load()
-  local fd=io.open(norns.state.data .. "rudiments.data","r")
-  if fd then
-    print("found datafile")
-    io.input(fd)
-    for i=1,112 do
-      pattern[i].data = tonumber(io.read())
-      for x=1,4 do
-        pattern[i].k[x] = tonumber(io.read())
-        pattern[i].n[x] = tonumber(io.read())
-      end
-    end
-    io.close(fd)
-  end
-end
-
 cleanup = function()
-  rudiments_save()
 end
