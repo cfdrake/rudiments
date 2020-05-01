@@ -41,14 +41,14 @@ Engine_Rudiments : CroneEngine {
 			var osc = SelectX.ar(shape, [triangle, square]);
 			
 			// AMP
-			var final = osc * env;
+			var final = (osc * env) / 8;
 			
 			// OUTPUT
 			Out.ar(out, final.dup);
 		}).add;
 		
 		this.addCommand("trigger", "i", { arg msg;
-			var i = msg[1];
+			var i = msg[1] - 1;
 			
 			var shapeVal = shape[i];
 			var freqVal = freq[i];
@@ -62,31 +62,31 @@ Engine_Rudiments : CroneEngine {
 		});
 		
 		this.addCommand("shape", "fi", { arg msg;
-			shape[msg[2]] = msg[1];
+			shape[msg[2] - 1] = msg[1];
 		});
 		
 		this.addCommand("freq", "fi", { arg msg;
-			freq[msg[2]] = msg[1];
+			freq[msg[2] - 1] = msg[1];
 		});
 		
 		this.addCommand("decay", "fi", { arg msg;
-			decay[msg[2]] = msg[1];
+			decay[msg[2] - 1] = msg[1];
 		});
 		
 		this.addCommand("sweep", "fi", { arg msg;
-			sweep[msg[2]] = msg[1];
+			sweep[msg[2] - 1] = msg[1];
 		});
 		
 		this.addCommand("lfoFreq", "fi", { arg msg;
-			lfoFreq[msg[2]] = msg[1];
+			lfoFreq[msg[2] - 1] = msg[1];
 		});
 		
 		this.addCommand("lfoShape", "fi", { arg msg;
-			lfoShape[msg[2]] = msg[1];
+			lfoShape[msg[2] - 1] = msg[1];
 		});
 		
 		this.addCommand("lfoSweep", "fi", { arg msg;
-			lfoSweep[msg[2]] = msg[1];
+			lfoSweep[msg[2] - 1] = msg[1];
 		});
 	}
 }

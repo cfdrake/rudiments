@@ -13,8 +13,6 @@
 -- ALT-E1 = bpm
 -- ALT+K3 = randomize all voices
 
--- TODO: Add velocity, ...
-
 engine.name = "Rudiments"
 
 local last = 0
@@ -61,19 +59,6 @@ end
 function setup_midi()
   all_midi.event = function(data)
     clk:process_midi(data)
-
-    local d = midi.to_msg(data)
-
-    if d.type == "note_on" then
-      note = d.note % 12
-
-      if note > 7 then
-        return
-      end
-
-      index = math.min(math.max(0, note), 7) + 1
-      trigger(index)
-    end
   end
 end
 
@@ -105,7 +90,7 @@ local current_pattern = 0
 local current_pset = 0
 
 local track = {}
-for i=1,4 do
+for i=1,voice_count do
   track[i] = {
     k = 0,
     n = 9 - i,
@@ -121,7 +106,7 @@ for i=1,112 do
     k = {},
     n = {}
   }
-  for x=1,4 do
+  for x=1,voice_count do
     pattern[i].k[x] = 0
     pattern[i].n[x] = 0
   end
@@ -136,7 +121,7 @@ local function reer(i)
 end
 
 local function trig()
-  for i=1,4 do
+  for i=1,voice_count do
     if track[i].s[track[i].pos] then
       trigger(i)
     end
@@ -144,18 +129,19 @@ local function trig()
 end
 
 function init()
+  params:add_separator()
+  clk:add_clock_params()
   setup_params()
   setup_midi()
   randomize()
-  for i=1,4 do reer(i) end
+  
+  for i=1,voice_count do reer(i) end
 
   screen.line_width(1)
 
   clk.on_step = step
   clk.on_select_internal = function() clk:start() end
   clk.on_select_external = reset_pattern
-
-  clk:add_clock_params()
 
   params:default()
 
@@ -169,16 +155,18 @@ end
 
 function step()
   if reset then
-    for i=1,4 do track[i].pos = 1 end
+    for i=1,voice_count do track[i].pos = 1 end
     reset = false
   else
-    for i=1,4 do track[i].pos = (track[i].pos % track[i].n) + 1 end
+    for i=1,voice_count do track[i].pos = (track[i].pos % track[i].n) + 1 end
   end
+  
   trig()
   redraw()
 end
 
 key1_hold = false
+
 function key(n,z)
   if n==1 and z==1 then
     key1_hold = true
@@ -196,6 +184,7 @@ function key(n,z)
       running = true
     end
   end
+  
   redraw()
 end
 
@@ -204,7 +193,7 @@ function enc(n,d)
     if key1_hold then
       params:delta("bpm", d)
     else
-      track_edit = util.clamp(track_edit+d,1,4)
+      track_edit = util.clamp(track_edit+d,1,voice_count)
     end
   elseif n == 2 then
     track[track_edit].k = util.clamp(track[track_edit].k+d,0,track[track_edit].n)
@@ -212,6 +201,7 @@ function enc(n,d)
     track[track_edit].n = util.clamp(track[track_edit].n+d,1,32)
     track[track_edit].k = util.clamp(track[track_edit].k,0,track[track_edit].n)
   end
+  
   reer(track_edit)
   redraw()
 end
@@ -219,36 +209,27 @@ end
 function redraw()
   screen.aa(0)
   screen.clear()
-  screen.move(0,10)
-  screen.level(4)
-  if params:get("clock") == 1 then
-    screen.text(params:get("bpm"))
-  else
-    for i=1,clk.beat+1 do
-       screen.rect(i*2,1,1,2)
-    end
-    screen.fill()
-  end
-  for i=1,4 do
+
+  for i=1,voice_count do
     screen.level((i == track_edit) and 15 or 4)
-    screen.move(5, i*10 + 10)
+    screen.move(5, i*8)
     screen.text_center(track[i].k)
-    screen.move(20,i*10 + 10)
+    screen.move(20,i*8)
     screen.text_center(track[i].n)
 
     for x=1,track[i].n do
       screen.level((track[i].pos==x and not reset) and 15 or 2)
-      screen.move(x*3 + 30, i*10 + 10)
+      screen.move(x*3 + 30, i*8)
+      
       if track[i].s[x] then
         screen.line_rel(0,-8)
       else
         screen.line_rel(0,-2)
       end
+      
       screen.stroke()
     end
   end
+  
   screen.update()
-end
-
-cleanup = function()
 end
