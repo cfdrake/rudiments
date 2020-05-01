@@ -21,6 +21,12 @@ local last = 0
 
 local voice_count = 8
 
+local BeatClock = require 'beatclock'
+
+local clk = BeatClock.new()
+local all_midi = midi.connect()
+
+
 function setup_params()
   for i = 1,voice_count do
     -- OSC
@@ -53,9 +59,9 @@ function setup_params()
 end
 
 function setup_midi()
-  m = midi.connect()
+  all_midi.event = function(data)
+    clk:process_midi(data)
 
-  m.event = function(data)
     local d = midi.to_msg(data)
 
     if d.type == "note_on" then
@@ -91,12 +97,6 @@ end
 -- sequencer section
 
 er = require 'er'
-
-local BeatClock = require 'beatclock'
-
-local clk = BeatClock.new()
-local clk_midi = midi.connect()
-clk_midi.event = clk.process_midi
 
 local reset = false
 local running = true
