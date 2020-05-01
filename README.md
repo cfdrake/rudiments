@@ -18,21 +18,26 @@ Note that after installing you must `SYSTEM => RESET` your Norns before running 
 
 ## Norns Script
 
-Each voice may be configured and MIDI mapped under `PARAMS`. Playing notes C-G in any octave will trigger the matching voice.
+Launching randomizes all voices, and drops you into a euclidean sequencer. Controls are as follows:
 
-- C: voice 1
-- C#: voice 2
-- D: voice 3
-- D#: voice 4
-- E: voice 5
-- F: voice 6
-- F#: voice 7
-- G: voice 8
+```
+E1 select
+E2 density
+E3 length
+K2 reset phase
+K3 start/stop
 
-At the moment there is built-in no sequencer, so the engine must be triggered by external gear.
+K1 = ALT
+ALT-E1 = bpm
+ALT+K3 = randomize all voices
+```
 
-Pressing `KEY3` on Norns will randomize the drumkit sounds.
+Use the `PARAMS` menu to configure voices manually, set up clock/sync behavior, MIDI map, and manage voice presets.
 
 ## SuperCollider Engine
 
 This script makes a new SuperCollider engine available, `Rudiments`. Please see `lib/engine_rudiments.sc` for the latest parameter definitions.
+
+## Thanks
+
+Thanks to [@rbxbx](http://github.com/rbxbx) for porting the playfair sequencer to this engine.
