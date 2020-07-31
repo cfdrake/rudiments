@@ -79,6 +79,101 @@ function randomize()
   end
 end
 
+-- grid section
+
+g = grid.connect()
+
+-- show mapped buttons
+-- TODO: some sort of visual feedback
+for i=1,8 do
+
+  g:led(1,i,1)
+  g:led(2,i,2)
+
+  -- synth section
+  g:led(4,i,1)
+  g:led(5,i,2)
+  g:led(6,i,3)
+  g:led(7,i,4)
+  g:led(8,i,5)
+  g:led(10,i,1)
+  g:led(11,i,2)
+  g:led(12,i,3)
+  g:led(13,i,4)
+
+
+  g:led(15,i,1)
+  g:led(16,i,2)
+end
+g:refresh()
+
+
+g.key = function(x,y,z)
+  if z == 1 then
+    if x == 4 then 
+      -- OSC LOW
+      params:set("shape" .. y, math.random(0, 1))
+      params:set("freq" .. y, math.random(20, 1000))
+    elseif x == 5 then 
+      -- OSC MID
+      params:set("shape" .. y, math.random(0, 1))
+      params:set("freq" .. y, math.random(1000, 2000))
+    elseif x == 6 then 
+      -- OSC HIGH
+      params:set("shape" .. y, math.random(0, 1))
+      params:set("freq" .. y, math.random(2000, 3500))
+    elseif x == 7 then 
+      -- OSC MID
+      params:set("shape" .. y, math.random(0, 1))
+      params:set("freq" .. y, math.random(3500, 5500))
+    elseif x == 8 then 
+      -- OSC HIGH
+      params:set("shape" .. y, math.random(0, 1))
+      params:set("freq" .. y, math.random(5500, 10000))
+      
+    elseif x == 10 then
+      -- ENV DECAY
+      params:set("decay" .. y, math.random())
+    elseif x == 11 then
+      -- ENV SWEEP
+      params:set("sweep" .. y, math.random(0, 2000))
+    elseif x == 12 then
+      -- LFO FREQ
+      params:set("lfoFreq" .. y, math.random(0, 1000))
+      params:set("lfoShape" .. y, math.random(0, 1))
+    elseif x == 13 then
+      -- LFO SWEEP
+      params:set("lfoSweep" .. y, math.random(0, 2000))
+
+
+    elseif x == 15 then
+      -- LESS TRACK LENGTH
+      track[y].n = util.clamp(track[y].n-1,1,32)
+      track[y].k = util.clamp(track[y].k,0,track[y].n)
+      reer(y)
+      redraw()
+    elseif x == 16 then
+      -- MORE TRACK LENGTH
+      track[y].n = util.clamp(track[y].n+1,1,32)
+      track[y].k = util.clamp(track[y].k,0,track[y].n)
+      reer(y)
+      redraw()
+      
+    elseif x == 1 then
+      -- MORE DENSITY
+      track[y].k = util.clamp(track[y].k-1,0,track[y].n)
+      reer(y)
+      redraw()
+    elseif x == 2 then
+      -- LESS DENSITY
+      track[y].k = util.clamp(track[y].k+1,0,track[y].n)
+      reer(y)
+      redraw()
+    end
+  end
+end
+
+
 -- sequencer section
 
 er = require 'er'
@@ -89,7 +184,7 @@ local track_edit = 1
 local current_pattern = 0
 local current_pset = 0
 
-local track = {}
+track = {}
 for i=1,voice_count do
   track[i] = {
     k = 0,
@@ -112,7 +207,7 @@ for i=1,112 do
   end
 end
 
-local function reer(i)
+function reer(i)
   if track[i].k == 0 then
     for n=1,32 do track[i].s[n] = false end
   else
@@ -124,7 +219,11 @@ local function trig()
   for i=1,voice_count do
     if track[i].s[track[i].pos] then
       trigger(i)
+      g:led(1,i,15)
+    else
+      g:led(1,i,1)
     end
+    g:refresh()
   end
 end
 
