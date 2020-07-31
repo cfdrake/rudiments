@@ -38,7 +38,7 @@ Use the `PARAMS` menu to configure voices manually, set up clock/sync behavior, 
 
 ## Grid Control
 Randomization options for the individual voices & nudging of pattern density / length 
-![Grid Control](grid-rudiments.svg)
+![Grid Control](grid-rudiments.PNG)
 
 ## SuperCollider Engine
 
