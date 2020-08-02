@@ -37,7 +37,7 @@ ALT+K3 = randomize all voices
 Use the `PARAMS` menu to configure voices manually, set up clock/sync behavior, MIDI map, and manage voice presets.
 
 ## Grid Control
-Randomization options for the individual voices & nudging of pattern density / length 
+Tap in & clear rhythms with 1-4, nudge synth parameters up & down with 5-10.  Randomize the synth voice with 15
 ![Grid Control](grid-rudiments.PNG)
 
 ## SuperCollider Engine
