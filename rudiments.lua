@@ -19,6 +19,8 @@ local last = 0
 
 local voice_count = 8
 
+local accents = 1
+
 local BeatClock = require 'beatclock'
 
 local clk = BeatClock.new()
@@ -88,87 +90,95 @@ g = grid.connect()
 for i=1,8 do
 
   g:led(1,i,1)
-  g:led(2,i,2)
+  g:led(2,i,1)
+  g:led(3,i,3)
+  g:led(4,i,3)
+  g:led(5,i,1)
+  g:led(6,i,1)
+  g:led(7,i,3)
+  g:led(8,i,3)
+  g:led(9,i,5)
+  g:led(10,i,5)
+  
+  g:led(15,i,2)
 
-  -- synth section
-  g:led(4,i,1)
-  g:led(5,i,2)
-  g:led(6,i,3)
-  g:led(7,i,4)
-  g:led(8,i,5)
-  g:led(10,i,1)
-  g:led(11,i,2)
-  g:led(12,i,3)
-  g:led(13,i,4)
-
-
-  g:led(15,i,1)
-  g:led(16,i,2)
 end
 g:refresh()
 
 
 g.key = function(x,y,z)
   if z == 1 then
-    if x == 4 then 
-      -- OSC LOW
-      params:set("shape" .. y, math.random(0, 1))
-      params:set("freq" .. y, math.random(20, 1000))
-    elseif x == 5 then 
-      -- OSC MID
-      params:set("shape" .. y, math.random(0, 1))
-      params:set("freq" .. y, math.random(1000, 2000))
-    elseif x == 6 then 
-      -- OSC HIGH
-      params:set("shape" .. y, math.random(0, 1))
-      params:set("freq" .. y, math.random(2000, 3500))
-    elseif x == 7 then 
-      -- OSC MID
-      params:set("shape" .. y, math.random(0, 1))
-      params:set("freq" .. y, math.random(3500, 5500))
-    elseif x == 8 then 
-      -- OSC HIGH
-      params:set("shape" .. y, math.random(0, 1))
-      params:set("freq" .. y, math.random(5500, 10000))
-      
-    elseif x == 10 then
-      -- ENV DECAY
-      params:set("decay" .. y, math.random())
-    elseif x == 11 then
-      -- ENV SWEEP
-      params:set("sweep" .. y, math.random(0, 2000))
-    elseif x == 12 then
-      -- LFO FREQ
-      params:set("lfoFreq" .. y, math.random(0, 1000))
-      params:set("lfoShape" .. y, math.random(0, 1))
-    elseif x == 13 then
-      -- LFO SWEEP
-      params:set("lfoSweep" .. y, math.random(0, 2000))
 
+    -- track operations
+    if x == 1 then
+      -- CLEAR TRACK
+      track[y].k = 0
+      reer(y)
+      redraw()      
+    elseif x == 2 then
+      -- MORE DENSITY
+      track[y].k = util.clamp(track[y].k+1,0,track[y].n)
+      reer(y)
+      redraw()
 
-    elseif x == 15 then
+    elseif x == 3 then
       -- LESS TRACK LENGTH
-      track[y].n = util.clamp(track[y].n-1,1,32)
+      track[y].n = 1
+      -- track[y].n = util.clamp(track[y].n-1,1,32)
       track[y].k = util.clamp(track[y].k,0,track[y].n)
       reer(y)
       redraw()
-    elseif x == 16 then
+    elseif x == 4 then
       -- MORE TRACK LENGTH
       track[y].n = util.clamp(track[y].n+1,1,32)
       track[y].k = util.clamp(track[y].k,0,track[y].n)
       reer(y)
       redraw()
       
-    elseif x == 1 then
-      -- MORE DENSITY
-      track[y].k = util.clamp(track[y].k-1,0,track[y].n)
-      reer(y)
-      redraw()
-    elseif x == 2 then
-      -- LESS DENSITY
-      track[y].k = util.clamp(track[y].k+1,0,track[y].n)
-      reer(y)
-      redraw()
+    -- synth ops  
+    elseif x == 5 then 
+      -- OSC LOWER
+      params:set("freq" .. y, util.clamp(params:get("freq" .. y)*0.9,20,10000))
+    elseif x == 6 then 
+      -- OSC HIGHER
+      params:set("freq" .. y, util.clamp(params:get("freq" .. y)*1.1,20,10000))
+      
+    elseif x == 7 then
+      -- ENV DECAY
+      params:set("decay" .. y, util.clamp(params:get("decay" .. y)*0.9,0.01,1))
+      params:set("sweep" .. y, math.random(0,2000))
+    elseif x == 8 then
+      -- ENV DECAY
+      params:set("decay" .. y, util.clamp(params:get("decay" .. y)*1.1,0.01,1))
+      params:set("sweep" .. y, math.random(0,2000))
+
+      
+    elseif x == 9 then
+      -- LFO FREQ
+      params:set("lfoFreq" .. y, util.clamp(params:get("lfoFreq" .. y)*0.95,1,1000))
+      -- params:set("lfoShape" .. y, math.random(0, 1))
+      params:set("lfoSweep" .. y, math.random(0,2000))
+      
+    elseif x == 10 then
+      -- LFO FREQ
+      params:set("lfoFreq" .. y, util.clamp(params:get("lfoFreq" .. y)*1.05,1,1000))
+      -- params:set("lfoShape" .. y, math.random(0, 1))
+      params:set("lfoSweep" .. y, math.random(0,2000))
+
+
+    elseif x == 15 then
+      -- RANDOMIZE ALL
+      params:set("shape" .. y, math.random(0, 1))
+      params:set("freq" .. y, math.random(20, 10000))
+      params:set("decay" .. y, math.random())
+      params:set("sweep" .. y, math.random(0, 2000))
+      params:set("lfoFreq" .. y, math.random(1, 1000))
+      params:set("lfoShape" .. y, math.random(0, 1))
+      params:set("lfoSweep" .. y, math.random(0, 2000))
+      
+
+
+
     end
   end
 end
@@ -218,6 +228,9 @@ end
 local function trig()
   for i=1,voice_count do
     if track[i].s[track[i].pos] then
+      if accents==1 then
+        params:set("lfoShape" .. i, math.random(0, 1))
+      end
       trigger(i)
       g:led(1,i,15)
     else
