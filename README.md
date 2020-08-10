@@ -4,7 +4,9 @@ an 8 voice lofi percussion synthesizer...
 
 ## Installation
 
-[Download latest release](https://github.com/cfdrake/rudiments/archive/master.zip) and copy files into `~/dust/code/rudiments`.
+From the Maiden Project Manager (http://norns.local)
+
+Or [Download latest release](https://github.com/cfdrake/rudiments/archive/master.zip) and copy files into `~/dust/code/rudiments`.
 
 Or use Git:
 
@@ -33,6 +35,10 @@ ALT+K3 = randomize all voices
 ```
 
 Use the `PARAMS` menu to configure voices manually, set up clock/sync behavior, MIDI map, and manage voice presets.
+
+## Grid Control
+Tap in & clear rhythms with 1-4, nudge synth parameters up & down with 5-10.  Randomize the synth voice with 15
+![Grid Control](grid-rudiments.PNG)
 
 ## SuperCollider Engine
 
